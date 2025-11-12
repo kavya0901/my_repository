@@ -1,0 +1,142 @@
+AWS 
+
+- s3 bucket - similar to azure blob storage -      amazon s3- (simple storage service) - object based storage
+    a container in aws that is used to store data  - unlimited storage - automatic data replication
+    - stores data as objects within buckets   - an object is a file and any data that describes the file 
+                                                                           - a bucket is container for objects
+     [- object storage vs block storage 
+       object - store files, images, etc but cannot install db engines, os etc on object storage
+       block - i can install all things - hard drive - that my computer boots from ]
+- glacier - very similar to s3- to store backups of data- used for long term archiving of data  - very less expensive
+
+
+-cloudformation- form your cloud - automatically create aws resources based on template
+
+- cloudtrail - similar to azure monitor
+    - Actions taken by a user, role, or an AWS service are recorded as events in CloudTrail.
+    - When activity occurs in your AWS account, that activity is recorded in a CloudTrail event.
+    - 3 ways to record events 
+         1. event history  - 90 days of management events in an AWS Region. 
+         2. cloudtrail lake  - capturing, storing, accessing, and analyzing user and API activity on AWS for audit and security purposes.
+                                        - keep event data in- event data store upto 3653 days (about 10 years)- choose One-year extendable retention pricing 
+                                                                                                                   2557 days (about 7 years)  - choose Seven-year retention pricing 
+         3. trails - capture a record of AWS activities, delivering and storing these events in an Amazon S3 bucket
+ 
+          type of events - management, data and insights 
+                   management events - control plane level - create, delete, modify, or describe  - ex. iam, ec2, s3, rds 
+                   data events - data plane level - reading or writing data.   - ex. s3, lambda
+                   insights events - unusual operational activity - detect and respond to anomalies - ex. Multiple failed login attempts.
+          
+- cloudwatch - basically a metrics repository - monitoring service of aws- monitor for cpu utilization, disk usage, etc
+                       - gives visibility into system-wide performance and allows users to set alarms, automatically react to changes, and gain a unified
+                          view of operational health.
+                       - you can configure alarm actions to stop, start, or terminate an Amazon EC2 instance when certain criteria are met. 
+                       - you can create alarms that initiate Amazon EC2 Auto Scaling and Amazon Simple Notification Service (Amazon SNS) actions 
+
+
+- amazon ec2 instance - similar to virtual machine in azure    - ec2- elastic cloud compute  
+                                       - it has an OS and virtual server that is up and running 
+
+
+- log group and log streams
+  log stream - sequence of log events that share same source. Each separate source of logs in CloudWatch Logs makes - separate log stream
+  log group - log group is a group of log streams that share the same retention, monitoring, and access control settings
+                     define log groups and specify which streams to put into each group.
+
+
+- alarms - watches a single CloudWatch metric or the result of a math expression based on CloudWatch metrics.
+               - alarm performs one or more actions - 
+               - The action can be sending a notification to an Amazon SNS topic, performing an Amazon EC2 action or an Amazon EC2 Auto Scaling
+                  action, or creating an OpsItem or incident in Systems Manager.
+
+
+- sns - simple notification service 
+         -  managed service that provides message delivery from publishers to subscribers (also known as producers and consumers).
+         - 
+
+
+
+
+
+
+vpc - virtual private cloud - similar to vnet in azure 
+         each vpc can have multiple availability zones - can create subnets-each in different availability zones
+         - good for separating public, private resources via subnets-route tables-allowing traffic to and from internet
+         - create a vpn to connect on-premise datacenter to vpc    or   use dedicated physical connection using AWS 'direct connect'
+     - every subnet must be connected to a network ACL(similar to security groups)- controls in and out traffic to subnet via ACL
+           network ACL controls (traffic for subnet)          security groups controls (traffic for individual ec2 instances)
+     - nat gateway - allow instances inside of vpc to access internet even if it has private ip address
+
+arn - amazon resource name - string that uniquely identifies an AWS resource, such as EC2 instances, S3 buckets, accounts, Lambda
+          functions
+
+IAM- identity and access management - similar to RBAC in azure  - web service that helps you securely control access to AWS resources
+
+metric_transformation block - namespace - works similar to folder 
+
+redshift - managed aws data warehouse 
+
+dynamoDB- managed aws NoSQL database
+
+RDS- relational database service - SQL, Oracle, aurora, MySQL, postgres - database instances
+
+route 53- hosted DNS service
+
+lambda -  if we do not want to get billed for each and every - minimize the amount used for compute resources that i use and use CPU
+                 resources only when i need                 -serverless - no need to manage servers, patches,.. etc (ex. lambda, s3, DynamoDB)
+                  - whenever we click on an app link - an api call - is passed that opens website...etc       -when we click link - a lambda function is
+                     invoked - doesn't use any compute resources till something happens( api call- actually invoked) - lambda starts - runs some code
+                     we wrote in it - so when link-clicked - lambda code is  executed and page opens and task complete- lambda stops running
+
+
+pilot light - disaster recovery model - store our data backed up into aws and quickly scale up resources 
+
+VMware cloud( VMC) - makes easy to move on-premises VMware workload to aws cloud 
+aws outposts- allow run aws environment on-premises
+
+support plans - developer, business, enterprise-on-ramp, enterprise
+
+AMI- amazon machine image - software image - everything that an ec2 instance requires in order to run - similar to vm images 
+
+ec2  - virtual server - u have the 100% control of it- unmanaged service - u have control on os, application, security configurations, scaling
+           (cook your own disk)
+s3 - managed server -
+        (have a meal at restaurant)
+
+EBS - elastic block store - store data for these virtual server instances 
+- create a snapshot of the virtual server - backup of the vm   - we can create a volume (vm) from these backup 
+                                                                         [click actions-> click create volume from snapshot -> then 'attach volume' to an ec2 instance]
+                                                                      - can also create an image(AMI) from the snapshot  -> 'launch an instance' from this ami 
+
+load balancer - used with ec2 instances, containers and lambda functions
+       - network load balancer - diverts traffic across ec2 instances spread in availability zones
+                    create ec2 instances in different availability zones -> create target group -> within actions of target associate with load balancer
+       - application load balancer 
+       - gateway load balancer
+
+ecr- elastic container registry
+
+auto scaling - ideally increase or decrease the instances automatically - we need to present a blueprint -(ami, instance type, subnet, vpc...etc)
+                                                                                                                              - specified in launch template
+                                        - after we can configure asg(auto scaling group) - mention how many instances - when to launch and terminate
+                                        - associate asg with elb target group (elastic load balancer)
+
+containers - container image - contains all code that needs to run a application
+                      present within container registry- it does two things- library for container images, container launch-image pulled from registry
+                      application needs to run- container is launched- container itself needs to run on something called container host(basically server)
+                      container runtime- allows multiple container to run on a single container host(ex. ec2 instance or fargate(serverless))
+         container orchestration - monitor your container hosts - such as scaling, handling failures, which container-which host, etc - allow to 
+                                                       interact with other aws services
+                             but ec2 instances os - is our responsibility like patching, updates, scaling by default...etc
+         ecs cluster - automatically builds asg -auto scaling groups
+                                  
+
+ 
+
+* certifications
+aws certified cloud practitioner     - clear and simple aws certified cloud practitioner 2023- udemy course
+aws certified solutions architect associate    - aws solutions architect associate with practice test - udemy course
+terraform associate hashicorp certified - certification 
+
+introduction to aws lambda- a 2- hour crash course
+    
